@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset= ISO-8859-1">
+    <meta charset="utf-8">
+    <title>chatterbox</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.12.0/underscore-min.js" integrity="sha512-BDXGXSvYeLxaldQeYJZVWXJmkisgMlECofWFXKpWwXnfcp/R708nrs/BtNLH5cb/5TE7aeYRTDBRXu6kRL4VeQ==" crossorigin="anonymous"></script>
+    <script>
+      // DO NOT MODIFY THIS CODE
+      if (!/(&|\?)username=/.test(window.location.search)) {
+        var search = window.location.search;
+        if (!/\?/.test(search)) {
+          search += '?';
+        }
+        if (search[search.length - 1] !== '?') {
+          search += '&';
+        }
+        search += 'username=' + (prompt('What is your name?') || 'anonymous');
+        window.location.search = search;
+      }
+    </script>
+  </head>
+  <body>
+    <div id="main">
+      <h1>chatterbox</h1>
+      <div class="spinner"><img src="./spiffygif_46x46.gif"></div>
+      <div id="rooms">
+        Room:
+        <select></select>
+        <button>Add Room</button>
+      </div>
+      <form action="#" id="send" method="post">
+        <input type="text" name="message" id="message"/>
+        <input type="submit" name="submit" class="submit"/>
+      </form>
+    </div>
+    <div id="chats"></div>
+    <script src="./config.js"></script>
+    <script src="./parse.js"></script>
+    <script src="./rooms.js"></script>
+    <script src="./friends.js"></script>
+    <script src="./messages.js"></script>
+    <script src="./formView.js"></script>
+    <script src="./roomsView.js"></script>
+    <script src="./messageView.js"></script>
+    <script src="./messagesView.js"></script>
+    <script src="./app.js"></script>
+    <script>
+      $(() => App.initialize());
+    </script>
+  </body>
+</html>

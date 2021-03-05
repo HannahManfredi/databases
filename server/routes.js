@@ -13,3 +13,5 @@ router.post('/users', controller.users.post);
 
 module.exports = router;
 
+//requests come in from client through routes
+
