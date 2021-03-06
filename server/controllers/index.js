@@ -1,5 +1,5 @@
 var models = require('../models');
-//chat server
+
 module.exports = {
 
   messages: {
@@ -33,18 +33,35 @@ module.exports = {
   },
 
   users: {
-    // Ditto as above
     get: function (req, res) {
-      console.log('get req from users: ', req)
+      let username = req.body.user;
+      console.log('username inside users get: ', username);
+      models.users.get(username, (err, data) => {
+        if (err) {
+          res.status(500).send();
+        } else {
+          res.statusCode = 200;
+          res.end(JSON.stringify(data));
+        }
+      });
     },
     post: function (req, res) {
       console.log('insde post from /users: ', req);
-      //if we get a post req from client to users endpt
-        //store the username in database
       console.log('req.body.user: ', req.body.user);
-      // console.log('username: ', username);
-      // console.log(models.users.postUser);
       models.users.postUser(req.body.user, (err, data) => {
+        if (err) {
+          res.status(500).send();
+        } else {
+          res.statusCode = 200;
+          res.end(JSON.stringify(data));
+        }
+      });
+    }
+  },
+
+  rooms: {
+    post: function (req, res) {
+      models.rooms.post(req.body.roomname, (err, data) => {
         if (err) {
           res.status(500).send();
         } else {

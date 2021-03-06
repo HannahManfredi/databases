@@ -4,8 +4,7 @@ module.exports = {
 
   messages: {
 
-    get: function (callback) { // a function which produces all the messages
-      //send a query to mysql db
+    get: function (callback) {
       console.log('inside models.messages.get');
       db.query('SELECT * FROM messages', [], function(err, results, fields) {
           if(err){
@@ -31,9 +30,8 @@ module.exports = {
   },
 
   users: {
-    // Ditto as above.
-    get: function () {
-      db.query('select * from users', (err, results, fields) => {
+    get: function (user, callback) {
+      db.query('select * from messages inner join users on users.username = ?', user, (err, results, fields) => {
         if(err) {
         console.log(err);
         } else {
@@ -43,7 +41,20 @@ module.exports = {
     },
     postUser: function (username, callback) {
       console.log('inside models post: ', username);
-      db.query('INSERT INTO users (username) VALUES ("' + username + '")', (err, results, fields) => {
+      db.query('INSERT INTO users (username) VALUES (?)', username, (err, results, fields) => {
+        if (err) {
+          callback(err, 0);
+        } else {
+          callback(null, results);
+        }
+      });
+    }
+  },
+
+  rooms: {
+    post: function(room, callback) {
+      console.log('inside rooms post');
+      db.query('INSERT INTO rooms (roomname) VALUES (?)', room, (err, results, fields) => {
         if (err) {
           callback(err, 0);
         } else {

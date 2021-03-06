@@ -4,6 +4,8 @@ var Parse = {
 
   userEndpoint: 'http://127.0.0.1:3000/classes/users',
 
+  roomEndpoint: 'http://127.0.0.1:3000/classes/rooms',
+
   create: function(message, successCB, errorCB = null) {
 
     $.ajax({
@@ -45,6 +47,24 @@ var Parse = {
       },
       error: function (error) {
         console.error('chatterbox: Failed to update username', error);
+      }
+    });
+  },
+
+  postRoomname: function(roomname) {
+    console.log('inside postRoomname: ', roomname);
+    let newRoomname = {room: roomname};
+    $.ajax({
+      url: Parse.userEndpoint,
+      type: 'POST',
+      crossDomain: true,
+      data: JSON.stringify(newRoomname),
+      contentType: 'application/json',
+      success: () => {
+        console.log('success');
+      },
+      error: function (error) {
+        console.error('chatterbox: Failed to update roomname', error);
       }
     });
   }

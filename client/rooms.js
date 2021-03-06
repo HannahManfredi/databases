@@ -15,6 +15,8 @@ var Rooms = {
   },
 
   add: function(room, callback = ()=>{}) {
+    //invoke an ajax request with roomname
+    Parse.postRoomname(room);
     Rooms._data.add(room);
     Rooms.selected = room;
     callback(Rooms.items());
