@@ -6,7 +6,8 @@ module.exports = {
 
     get: function (callback) {
       console.log('inside models.messages.get');
-      db.query('SELECT * FROM messages', [], function(err, results, fields) {
+      //need to use a join here grab all messages from specific user
+      db.query('SELECT * FROM messages', function(err, results, fields) {
           if(err){
             console.log(err);
             callback(err, 0);
@@ -19,8 +20,9 @@ module.exports = {
 
     post: function (mssg, username, roomname, callback) {
       console.log('post mssg from client: ', mssg);
-      db.query('INSERT INTO messages (mssg, userid, roomid) VALUES (?, (select users.id from users where username = ?), (select rooms.id from rooms where roomname = ?))', [mssg, username, roomname], (err, results, fields) => {
-        if(err){
+      //grab just one row from each table, only insert into if it's not there
+      db.query('INSERT IGNORE INTO messages (mssg, userid, roomname) VALUES (?, (select users.id from users where username = ?), ?)', [mssg, username, roomname], (err, results, fields) => {
+        if(err) {
           callback(err, 0);
         } else {
           callback(null, results);
@@ -41,7 +43,10 @@ module.exports = {
     },
     postUser: function (username, callback) {
       console.log('inside models post: ', username);
-      db.query('INSERT INTO users (username) VALUES (?)', username, (err, results, fields) => {
+      //only insert into if it doesn't already exist
+      //only add in user if user is unique
+      // WHERE NOT EXISTS ( SELECT * FROM
+      db.query('INSERT IGNORE INTO users (username) VALUES (?)', username, (err, results, fields) => {
         if (err) {
           callback(err, 0);
         } else {
@@ -54,6 +59,7 @@ module.exports = {
   rooms: {
     post: function(room, callback) {
       console.log('inside rooms post');
+      //only insert into if it doesn't already exist
       db.query('INSERT INTO rooms (roomname) VALUES (?)', room, (err, results, fields) => {
         if (err) {
           callback(err, 0);

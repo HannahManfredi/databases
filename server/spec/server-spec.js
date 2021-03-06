@@ -16,11 +16,16 @@ describe('Persistent Node Chat Server', function() {
     });
     dbConnection.connect();
 
-       var tablename = "messages"; // TODO: fill this out
+       var tablename = "messages";
+       var usersTable = "users";
+
+       //figure out how to wipe out each table
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-    dbConnection.query('truncate ' + tablename, done);
+    dbConnection.query('truncate ' + tablename);
+    dbConnection.query('delete from ' + usersTable, done);
+    // dbConnection.query('delete from ' + roomsTable, done);
   });
 
   afterEach(function() {
@@ -69,8 +74,8 @@ describe('Persistent Node Chat Server', function() {
 
   it('Should output all messages from the DB', function(done) {
     // Let's insert a message into the db
-       var queryString = "select * from messages";
-       var queryArgs = [];
+       var queryString = "insert into messages (mssg, userid, roomname) values (?, ?, ?)";
+       var queryArgs = ['Men like you can never change!', 1, 'main'];
     // TODO - The exact query string and query args to use
     // here depend on the schema you design, so I'll leave
     // them up to you. */
@@ -82,6 +87,8 @@ describe('Persistent Node Chat Server', function() {
       // the message we just inserted:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
         var messageLog = JSON.parse(body);
+        console.log('body: ', JSON.parse(body));
+        console.log('mssg: ', messageLog[0]);
         expect(messageLog[0].mssg).to.equal('Men like you can never change!');
         expect(messageLog[0].roomname).to.equal('main');
         done();
