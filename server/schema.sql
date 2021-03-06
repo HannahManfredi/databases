@@ -1,28 +1,25 @@
 CREATE DATABASE chat;
-
 USE chat;
 CREATE TABLE users (
-  id int primary key,
-  username varchar(100)
+  id int auto_increment,
+  username varchar(100),
+  PRIMARY KEY (id)
 );
 CREATE TABLE rooms (
-  id int primary key,
-  roomname varchar(100)
+  id int auto_increment,
+  roomname varchar(100),
+  PRIMARY KEY (id)
 );
-
 CREATE TABLE messages (
-  id int primary key,
-  text varchar(100),
-  room int not null,
-  person int not null,
-  foreign key (room) references users(id),
-  foreign key (person) references rooms(id)
+  id int auto_increment,
+  mssg varchar(250),
+  userid int not null,
+  roomid int not null,
+  createdAt VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (userid) REFERENCES users(id),
+  FOREIGN KEY (roomid) REFERENCES rooms(id)
 );
-
--- ALTER TABLE users ALTER id SET DEFAULT 1;
--- ALTER TABLE messages ALTER id SET DEFAULT 1;
--- ALTER TABLE messages ALTER room SET DEFAULT 1;
--- ALTER TABLE messages ALTER person SET DEFAULT 1;
 
 /*  Execute this file from the command line by typing:
  *    mysql -u root < server/schema.sql

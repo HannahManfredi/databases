@@ -17,12 +17,13 @@ module.exports.app = app;
 app.set('port', 3000);
 
 // Logging and parsing
+app.use(cors());
 app.use(morgan('dev'));
 app.use(parser.json());
-app.use(cors());
 
 // Set up our routes
 app.use('/classes', router);
+
 
 // Serve the client files
 app.use(express.static(__dirname + '/../client'));

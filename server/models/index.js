@@ -1,49 +1,57 @@
 var db = require('../db');
 
 module.exports = {
+
   messages: {
 
     get: function (callback) { // a function which produces all the messages
       //send a query to mysql db
       console.log('inside models.messages.get');
-      db.query('select * from messages', [], function(err, results) {
+      db.query('SELECT * FROM messages', [], function(err, results, fields) {
           if(err){
             console.log(err);
-            callback(err);
+            callback(err, 0);
           } else {
             console.log('results from db get query: ', results);
-            callback(results);
+            callback(null, results);
           }
         });
     },
 
-    post: function (mssg, roomname, username, callback) {
+    post: function (mssg, username, roomname, callback) {
       console.log('post mssg from client: ', mssg);
-      let queryStr = 'insert into messages (id, text, room, person) values (id, "mssg", ?, ?) on duplicate key update id=id+1';
-      db.query(queryStr, (err, results) => {
+      db.query('INSERT INTO messages (mssg, userid, roomid) VALUES (?, (select users.id from users where username = ?), (select rooms.id from rooms where roomname = ?))', [mssg, username, roomname], (err, results, fields) => {
         if(err){
-          callback(err);
+          callback(err, 0);
         } else {
-          callback(results);
+          callback(null, results);
+        }
+      });
+    }
+  },
+
+  users: {
+    // Ditto as above.
+    get: function () {
+      db.query('select * from users', (err, results, fields) => {
+        if(err) {
+        console.log(err);
+        } else {
+        return data;
         }
       });
     },
-
-    users: {
-      // Ditto as above.
-      get: function () {
-        return db.query('select * from users', (err, data) => {
-          if(err) {
-          console.log(err);
-          } else {
-          return data;
-          }
-        });
-      },
-      post: function (username) {
-        console.log('end');
-      }
+    postUser: function (username, callback) {
+      console.log('inside models post: ', username);
+      db.query('INSERT INTO users (username) VALUES ("' + username + '")', (err, results, fields) => {
+        if (err) {
+          callback(err, 0);
+        } else {
+          callback(null, results);
+        }
+      });
     }
   }
+
 }
 
