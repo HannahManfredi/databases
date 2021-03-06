@@ -47,8 +47,7 @@ module.exports = {
     },
     post: function (req, res) {
       console.log('insde post from /users: ', req);
-      console.log('req.body.user: ', req.body.user);
-      models.users.postUser(req.body.user, (err, data) => {
+      models.users.post(req.body.user, (err, data) => {
         if (err) {
           res.status(500).send();
         } else {
@@ -58,18 +57,5 @@ module.exports = {
       });
     }
   },
-
-  rooms: {
-    post: function (req, res) {
-      models.rooms.post(req.body.roomname, (err, data) => {
-        if (err) {
-          res.status(500).send();
-        } else {
-          res.statusCode = 200;
-          res.end(JSON.stringify(data));
-        }
-      });
-    }
-  }
 
 };

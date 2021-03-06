@@ -37,31 +37,9 @@ class User extends Model {}
       allowNull: false
     }
 }, {
-    db,
+    connection,
     modelName: 'User'
 });
-
-class Room extends Model {}
-  Room.init({
-    uid: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    roomname: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-}, {
-  db,
-  modelName: 'Room'
-});
-
-// var Message = db.define('Message', {
-//   userid: Sequelize.INTEGER,
-//   text: Sequelize.STRING,
-//   roomname: Sequelize.STRING
-// });
 
 class Message extends Model {}
   Message.init({
