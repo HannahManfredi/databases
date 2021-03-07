@@ -1,61 +1,71 @@
 var models = require('../models');
+var db = require('../db');
+// var Sequelize = require('sequelize');
+var Promise = require('bluebird');
+
+//update to use SEQUELIZE:
 
 module.exports = {
 
   messages: {
-    get: function (req, res) { // a function which handles a get request for all messages
-      console.log('inside controllers get');
-      models.messages.get((err, data) => {
+    get: function (req, res) {
+      db.Message.findAll({include: [User]})
+        .complete( (err, results) => {
           if (err) {
-            res.status(500).send(err);
+            res.status(500).send();
           } else {
-            res.statusCode = 200;
-            res.header("Access-Control-Allow-Origin", "*");
-            res.end(JSON.stringify(data));
+            res.json(results);
           }
-      })
+        });
     },
-    post: function (req, res) { // a function which handles posting a message to the database
-      console.log('post from messages: ', req);
-      let mssg = req.body;
-      let mssgText = mssg['text'];
-      let roomname = mssg['roomname'];
-      let username = mssg['username'];
-      models.messages.post(mssgText, username, roomname, (err, data) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.statusCode = 200;
-          res.end(JSON.stringify(data));
-        }
-      });
+    post: function (req, res) {
+      db.User.findOrCreate({ username: req.body.username })
+        .complete( (err, results) => {
+          if (err) {
+            res.status(500).send();
+          } else {
+            let params = {
+              mssg: req.body[text],
+              userid: results.id,
+              roomname: req.body[roomname]
+            };
+            db.Message.create(params)
+              .complete( (err, results) => {
+                if (err) {
+                  res.status(500).send();
+                } else {
+                  res.sendStatus(201) ;
+                }
+              });
+          ``}
+        });
     }
   },
 
   users: {
     get: function (req, res) {
-      let username = req.body.user;
-      console.log('username inside users get: ', username);
-      models.users.get(username, (err, data) => {
-        if (err) {
-          res.status(500).send();
-        } else {
-          res.statusCode = 200;
-          res.end(JSON.stringify(data));
-        }
-      });
+      db.Users.findAll()
+        .complete( (err, results) => {
+          if (err) {
+            res.sendStatus(500);
+          } else {
+            res.json(results);
+          }
+        })
     },
     post: function (req, res) {
-      console.log('insde post from /users: ', req);
-      models.users.post(req.body.user, (err, data) => {
-        if (err) {
-          res.status(500).send();
-        } else {
-          res.statusCode = 200;
-          res.end(JSON.stringify(data));
-        }
-      });
+      User.create({username: req.body.username})
+        .complete( (err, results) => {
+          if (err) {
+            res.sendStatus(500);
+          } else {
+            res.sendStatus(201);
+          }
+        });
     }
-  },
+  }
 
-};
+}
+
+
+//

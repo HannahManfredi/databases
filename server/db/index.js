@@ -12,54 +12,39 @@ connection
     console.log('Unable to connect to the database:', err);
   });
 
-module.exports = (sequelize, DataTypes) => {
-  const users = connection.define('users', {
-    uid: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  }, {
-      tableName: 'users'
-    });
-    return users;
-};
+const User = connection.define('User', {
+  // uid: {
+  //   type: Sequelize.INTEGER,
+  //   primaryKey: true,
+  //   autoIncrement: true
+  // },
+  username: Sequelize.STRING
+});
 
-console.log(users === connection.models.users); //true
+console.log(User === connection.models.User);
 
-module.exports = (sequelize, DataTypes) => {
-  const messages = connection.define('messages', {
-    uid: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    mssg: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    },
-    userid: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    roomname: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  }, {
-      tableName: 'messages'
-    });
-    return messages;
-};
+const Message = connection.define('Message', {
+  // uid: {
+  //   type: DataTypes.INTEGER,
+  //   primaryKey: true,
+  //   autoIncrement: true
+  // },
+  mssg: Sequelize.STRING,
+  // allowNull: false,
+  roomname: Sequelize.STRING,
+});
 
-console.log(messages === connection.models.messages); //true
+console.log(Message === connection.models.Message); //true
 
-users.sync();
-messages.sync();
+User.hasMany(Message);
+Message.belongsTo(User);
+
+User.sync();
+Message.sync();
+
+module.exports.User = User;
+module.exports.Message = Message;
+// module.exports = connection;
 
 //{ force: true }
 // var mysql = require('mysql');
@@ -81,6 +66,6 @@ messages.sync();
 
 //export connection
 
-module.exports = connection;
+
 
 

@@ -4,6 +4,7 @@
 var mysql = require('mysql');
 var request = require('request'); // You might need to npm install the request module!
 var expect = require('chai').expect;
+var sequelizeConnection = require('../db');
 
 describe('Persistent Node Chat Server', function() {
   var dbConnection;
@@ -15,7 +16,9 @@ describe('Persistent Node Chat Server', function() {
       database: 'chat'
     });
     dbConnection.connect();
-
+    // sequelizeConnection();
+    //how to truncate from sequelize
+    // sequelizeConnection.drop();
        var tablename = "messages";
        var usersTable = "users";
 
@@ -25,10 +28,10 @@ describe('Persistent Node Chat Server', function() {
      * (or repeated runs of the tests) won't screw each other up: */
     dbConnection.query('truncate ' + tablename);
     dbConnection.query('delete from ' + usersTable, done);
-    // dbConnection.query('delete from ' + roomsTable, done);
   });
 
   afterEach(function() {
+    // sequelizeConnection.close();
     dbConnection.end();
   });
 
@@ -67,6 +70,19 @@ describe('Persistent Node Chat Server', function() {
 
           done();
         });
+        // sequelizeConnection.Message.findAll()
+        //   .then( () => {
+        //     expect(results.length).to.equal(1);
+        //   })
+        //   .then( () => {
+        //     expect(results[0].mssg).to.equal('In mercy\'s name, three days is all I need.');
+        //   })
+        //   .then ( () => {
+        //     done();
+        //   })
+        //   .catch( (err) => {
+        //     console.log(err);
+        //   })
       });
     });
     done();
@@ -87,7 +103,8 @@ describe('Persistent Node Chat Server', function() {
       // the message we just inserted:
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
         var messageLog = JSON.parse(body);
-        console.log('body: ', JSON.parse(body));
+        console.log('body: ', body);
+        console.log('body: ', JSON.stringify(body));
         console.log('mssg: ', messageLog[0]);
         expect(messageLog[0].mssg).to.equal('Men like you can never change!');
         expect(messageLog[0].roomname).to.equal('main');
@@ -96,3 +113,4 @@ describe('Persistent Node Chat Server', function() {
     });
   });
 });
+
